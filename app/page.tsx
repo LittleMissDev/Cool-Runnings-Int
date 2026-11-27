@@ -42,10 +42,21 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const updateScrollState = () => setScrolled(window.scrollY > 24);
+    const updateScrollState = () => {
+      const aboutSection = document.getElementById("about");
+      const header = document.querySelector(".topbar");
+      const headerBottom = header?.getBoundingClientRect().height ?? 76;
+
+      setScrolled(aboutSection !== null && aboutSection.getBoundingClientRect().top <= headerBottom);
+    };
+
     updateScrollState();
     window.addEventListener("scroll", updateScrollState, { passive: true });
-    return () => window.removeEventListener("scroll", updateScrollState);
+    window.addEventListener("resize", updateScrollState);
+    return () => {
+      window.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+    };
   }, []);
 
   return (
@@ -120,6 +131,8 @@ export default function Home() {
         <section className="hero-bottom" aria-label="Trusted companies">
           <div className="trusted-content">
             <p className="trusted-label">Trusted by companies like</p>
+          </div>
+          <div className="marquee-band">
             <div className="marquee" aria-hidden="true">
               <div className="marquee-track">
                 {[0, 1].map((copy) => (
