@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const navItems = [
   ["Home", "#home"],
@@ -10,25 +10,47 @@ const navItems = [
   ["Contact Us", "#contact"],
 ];
 
+const capabilities = [
+  {
+    number: "01",
+    title: "Built around your operation",
+    description:
+      "We plan refrigeration and cold storage around your space, products, and day-to-day workflow.",
+  },
+  {
+    number: "02",
+    title: "Commercial expertise",
+    description:
+      "From specialist equipment to complete installations, we support the demands of commercial environments.",
+  },
+  {
+    number: "03",
+    title: "Efficiency that lasts",
+    description:
+      "Thoughtful system design helps protect product quality while making dependable operation a priority.",
+  },
+  {
+    number: "04",
+    title: "Support you can count on",
+    description:
+      "Our team helps keep your cold storage performing with practical service and ongoing support.",
+  },
+];
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const updateScrollState = () => setScrolled(window.scrollY > 24);
+    updateScrollState();
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    return () => window.removeEventListener("scroll", updateScrollState);
+  }, []);
 
   return (
-    <main id="home" className="hero">
-      <video
-        className="hero-video"
-        autoPlay
-        muted
-        loop
-        playsInline
-        aria-hidden="true"
-        poster="/city-hero.jpg"
-      >
-        <source src="/CRI%20embed.mp4" type="video/mp4" />
-      </video>
-      <div className="hero-overlay" />
-
-      <header className="topbar">
+    <main className="site-page">
+      <header className={`topbar ${scrolled ? "is-scrolled" : ""}`}>
         <a className="brand" href="#home" aria-label="Cool Runnings International home">
           <span>Cool</span>
           <span>Runnings</span>
@@ -53,7 +75,10 @@ export default function Home() {
               className={index === 0 ? "nav-link active" : "nav-link"}
               href={href}
               key={label}
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                setMenuOpen(false);
+                if (index === 0) setScrolled(false);
+              }}
             >
               {label}
             </a>
@@ -64,38 +89,80 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="hero-content" aria-labelledby="hero-title">
-        <div className="hero-copy">
-          <p className="hero-eyebrow">Commercial refrigeration · Industrial cold storage</p>
-          <h1 id="hero-title">Cold storage solutions that keep business moving.</h1>
-          <p className="hero-description">
-            Reliable refrigeration systems, expert installation, and ongoing support for
-            businesses that can&apos;t afford to lose their cool.
-          </p>
-          <a className="hero-cta" href="#contact">
-            Get a free quote <span aria-hidden="true">→</span>
-          </a>
-        </div>
+      <section id="home" className="hero">
+        <video
+          className="hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          poster="/city-hero.jpg"
+        >
+          <source src="/CRI%20embed.mp4" type="video/mp4" />
+        </video>
+        <div className="hero-overlay" />
+
+        <section className="hero-content" aria-labelledby="hero-title">
+          <div className="hero-copy">
+            <p className="hero-eyebrow">Commercial refrigeration · Industrial cold storage</p>
+            <h1 id="hero-title">Cold storage solutions that keep business moving.</h1>
+            <p className="hero-description">
+              Reliable refrigeration systems, expert installation, and ongoing support for
+              businesses that can&apos;t afford to lose their cool.
+            </p>
+            <a className="hero-cta" href="#contact">
+              Get a free quote <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </section>
+
+        <section className="hero-bottom" aria-label="Trusted companies">
+          <div className="trusted-content">
+            <p className="trusted-label">Trusted by companies like</p>
+            <div className="marquee" aria-hidden="true">
+              <div className="marquee-track">
+                {[0, 1].map((copy) => (
+                  <div className="marquee-group" key={copy}>
+                    <span>S&amp;R Membership Shopping</span>
+                    <span>XSyn Corporation</span>
+                    <span>PriceSmart Inc.</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <ul className="visually-hidden">
+            <li>S&amp;R Membership Shopping</li>
+            <li>XSyn Corporation</li>
+            <li>PriceSmart Inc.</li>
+          </ul>
+        </section>
       </section>
 
-      <section className="hero-bottom" aria-label="Trusted companies">
-        <p className="trusted-label">Trusted by companies like</p>
-        <div className="marquee" aria-hidden="true">
-          <div className="marquee-track">
-            {[0, 1].map((copy) => (
-              <div className="marquee-group" key={copy}>
-                <span>S&amp;R Membership Shopping</span>
-                <span>XSyn Corporation</span>
-                <span>PriceSmart Inc.</span>
-              </div>
+      <section id="about" className="about-section" aria-labelledby="about-title">
+        <div className="about-inner">
+          <div className="about-heading">
+            <div>
+              <p className="about-eyebrow">About Cool Runnings International</p>
+              <h2 id="about-title">Keeping your business at the right temperature.</h2>
+            </div>
+            <p className="about-intro">
+              We deliver commercial refrigeration and industrial cold storage solutions that
+              help businesses protect their products and keep operations running smoothly.
+            </p>
+          </div>
+
+          <div className="capability-grid">
+            {capabilities.map((capability) => (
+              <article className="capability-card" key={capability.number}>
+                <span className="capability-number">{capability.number}</span>
+                <h3>{capability.title}</h3>
+                <p>{capability.description}</p>
+              </article>
             ))}
           </div>
         </div>
-        <ul className="visually-hidden">
-          <li>S&amp;R Membership Shopping</li>
-          <li>XSyn Corporation</li>
-          <li>PriceSmart Inc.</li>
-        </ul>
       </section>
     </main>
   );
